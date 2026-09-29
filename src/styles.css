@@ -75,29 +75,53 @@ h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.15; font-we
 .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
 .logo { font-family: "Fraunces", serif; font-weight: 700; font-size: 1.25rem; text-decoration: none; }
 .logo span { color: var(--copper); }
-.nav-links { display: flex; gap: 4px; align-items: center; }
+.nav-links { display: flex; gap: 4px; align-items: center; margin-left: auto; }
 .nav-links a {
   text-decoration: none; color: var(--muted); font-size: .95rem; font-weight: 500;
   padding: 8px 12px; border-radius: 999px;
 }
 .nav-links a:hover { color: var(--text); background: var(--surface-2); }
-.theme-btn {
+.nav-actions { display: flex; align-items: center; gap: 8px; margin-left: 8px; }
+.theme-btn, .menu-btn {
   border: 1px solid var(--line); background: var(--surface); color: var(--text);
-  width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 1rem; margin-left: 6px;
+  width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1rem;
 }
-@media (max-width: 760px) { .nav-links a:not(.keep) { display: none; } }
+.menu-btn { display: none; place-items: center; align-content: center; gap: 5px; }
+.menu-btn span { display: block; width: 16px; height: 1.5px; background: currentColor; border-radius: 2px; transition: transform .25s; }
+.nav.open .menu-btn span:first-child { transform: translateY(3.25px) rotate(45deg); }
+.nav.open .menu-btn span:last-child { transform: translateY(-3.25px) rotate(-45deg); }
+
+@media (max-width: 760px) {
+  .menu-btn { display: grid; }
+  /* backdrop-filter would make the fixed menu panel position against the 64px nav bar instead of the viewport */
+  .nav.open { backdrop-filter: none; background: var(--bg); }
+  .nav-links {
+    position: fixed; inset: 64px 0 0; margin: 0; z-index: 9;
+    flex-direction: column; align-items: stretch; gap: 0; padding: 12px 16px 32px;
+    background: var(--bg);
+    opacity: 0; visibility: hidden; transform: translateY(-8px);
+    transition: opacity .2s, transform .2s, visibility .2s;
+  }
+  .nav.open .nav-links { opacity: 1; visibility: visible; transform: none; }
+  .nav-links a {
+    font-family: "Fraunces", serif; font-size: 1.9rem; color: var(--text);
+    padding: 14px 4px; border-radius: 0; border-bottom: 1px solid var(--line);
+  }
+  .nav-links a:hover { background: none; color: var(--copper); }
+}
 
 /* Hero */
-.hero { padding: 64px 0 80px; }
-.hero .wrap { display: grid; gap: 48px; align-items: center; }
-@media (min-width: 880px) { .hero .wrap { grid-template-columns: 1.15fr .85fr; } }
+.hero { padding: clamp(40px, 7vw, 72px) 0 clamp(56px, 8vw, 88px); overflow-x: clip; }
+.hero .wrap { display: grid; gap: 56px; align-items: center; }
+@media (min-width: 760px) { .hero .wrap { grid-template-columns: 1.35fr .65fr; gap: 40px; } }
+@media (min-width: 1100px) { .hero .wrap { grid-template-columns: 1.2fr .8fr; gap: 64px; } }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: .85rem; font-weight: 500; color: var(--copper);
   background: var(--copper-soft); padding: 6px 14px; border-radius: 999px;
 }
 .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #3fa46a; }
-.hero h1 { font-size: clamp(2.5rem, 6vw, 4.2rem); margin: 20px 0 16px; letter-spacing: -.02em; }
+.hero h1 { font-size: clamp(2.5rem, 5vw, 4.2rem); margin: 20px 0 16px; letter-spacing: -.02em; }
 .hero h1 em { font-style: italic; color: var(--copper); }
 .lead { font-size: 1.15rem; color: var(--muted); max-width: 34em; }
 .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
@@ -108,17 +132,40 @@ h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.15; font-we
 }
 .btn:hover { transform: translateY(-2px); }
 .btn.primary { background: var(--copper); border-color: var(--copper); color: #fff; }
-.quick-facts { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 40px; color: var(--muted); font-size: .9rem; }
-.quick-facts strong { display: block; font-family: "Fraunces", serif; font-size: 1.8rem; color: var(--text); }
+.quick-facts {
+  display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 12px 36px;
+  margin-top: 40px; color: var(--muted); font-size: .9rem; line-height: 1.35;
+}
+.quick-facts strong { display: block; font-family: "Fraunces", serif; font-size: 1.8rem; color: var(--text); margin-bottom: 4px; white-space: nowrap; }
+@media (max-width: 1099px) {
+  .quick-facts { gap: 12px 24px; font-size: .82rem; }
+  .quick-facts strong { font-size: 1.45rem; }
+  .portrait .badge { bottom: 14px; font-size: .8rem; padding: 8px 12px; }
+}
 
-.portrait { position: relative; max-width: 400px; margin: 0 auto; width: 100%; }
+@media (max-width: 560px) {
+  .hero h1 { font-size: clamp(2.2rem, 10.5vw, 2.7rem); }
+  .lead { font-size: 1.05rem; }
+  .cta { display: grid; grid-template-columns: 1fr 1fr; }
+  .cta .btn { justify-content: center; }
+  .cta .btn.primary { grid-column: 1 / -1; }
+  .quick-facts {
+    grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: .78rem;
+    padding-top: 24px; border-top: 1px solid var(--line); margin-top: 32px;
+  }
+  .quick-facts strong { font-size: 1.3rem; }
+}
+
+/* Shifted left by half the backing-shape offset so the pair stays centred and inside the viewport */
+.portrait { position: relative; left: -9px; max-width: 380px; margin: 0 auto; width: calc(100% - 18px); }
+@media (max-width: 759px) { .portrait { max-width: 340px; } }
 .portrait::before {
   content: ""; position: absolute; inset: 18px -18px -18px 18px;
   border-radius: 200px 200px var(--radius) var(--radius);
   background: linear-gradient(160deg, var(--copper), var(--rose)); opacity: .85;
 }
 .portrait img {
-  position: relative; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 30%;
+  position: relative; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 60%;
   border-radius: 200px 200px var(--radius) var(--radius); box-shadow: var(--shadow);
 }
 .portrait .badge {
